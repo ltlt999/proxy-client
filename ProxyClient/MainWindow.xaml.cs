@@ -1,0 +1,94 @@
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
+using ProxyClient.ViewModels;
+
+namespace ProxyClient;
+
+public partial class MainWindow : Window
+{
+    private readonly MainViewModel _vm;
+    internal bool _forceHiddenStart;
+
+    public MainWindow()
+    {
+        InitializeComponent();
+        _vm = new MainViewModel();
+        DataContext = _vm;
+        _vm.StatusChanged += OnStatusChanged;
+        ((System.Collections.Specialized.INotifyCollectionChanged)LogList.Items).CollectionChanged += (_, _) =>
+        {
+            if (LogList.Items.Count > 0)
+                LogList.ScrollIntoView(LogList.Items[LogList.Items.Count - 1]);
+        };
+    }
+
+    private void OnStatusChanged(object? sender, bool coreRunning)
+        => (App.Current as App)?.ReportStatus(coreRunning, _vm.SystemProxyOn);
+
+    private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (_vm.SelectedServer != null)
+            _vm.ActivateCommand.Execute(null);
+    }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        _vm.AutoStartIfNeeded();
+    }
+
+    private void Window_Closing(object sender, CancelEventArgs e)
+    {
+        if (App.Current is App app && !app.HandleWindowClose())
+        {
+            e.Cancel = true;
+            return;
+        }
+        _vm.OnWindowClosing();
+    }
+
+    private void Settings_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new SettingsWindow(App.Data.Settings) { Owner = this };
+        dlg.ShowDialog();
+        _vm.SyncSettings();
+    }
+
+    private void About_Click(object sender, RoutedEventArgs e)
+    {
+        MessageBox.Show(
+            "ProxyClient v1.0\n\n" +
+            "基于 Xray-core 的现代化轻量代理客户端\n\n" +
+            "支持协议：VMess / VLESS / Trojan / Shadowsocks\n" +
+            "功能：订阅导入  分享链接解析  规则/全局路由\n" +
+            "托盘常驻  开机自启  启动后自动连接\n\n" +
+            "本地端口：SOCKS5 10808  HTTP 10809\n" +
+            "关闭按钮可最小化到托盘",
+            "关于 ProxyClient", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    private void Exit_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void TitleBar_Drag(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ClickCount == 2)
+        {
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            return;
+        }
+        if (e.LeftButton == MouseButtonState.Pressed)
+            DragMove();
+    }
+
+    private void Minimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    private void Maximize_Click(object sender, RoutedEventArgs e)
+        => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
+    private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void Window_StateChanged(object sender, EventArgs e)
+    {
+        MaxRestoreBtn.Content = WindowState == WindowState.Maximized ? "❐" : "□";
+    }
+}

@@ -1,0 +1,37 @@
+# .NET
+bin/
+obj/
+out/
+publish/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# NuGet
+*.nupkg
+packages/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Runtime data
+data/crash.log
+
+# Test results
+TestResults/
+
+# dotCover
+*.dotCover
+
+# Others
+*.log
+*.tmp

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>ProxyClient</RootNamespace>
+    <AssemblyName>ProxyClient</AssemblyName>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\xray-core\xray.exe" Link="xray\xray.exe" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\xray-core\geoip.dat" Link="xray\geoip.dat" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\xray-core\geosite.dat" Link="xray\geosite.dat" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\xray-core\wintun.dll" Link="xray\wintun.dll" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
