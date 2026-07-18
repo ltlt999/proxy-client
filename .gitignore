@@ -3,6 +3,7 @@ bin/
 obj/
 out/
 publish/
+dist/
 
 # Visual Studio
 .vs/
@@ -23,8 +24,11 @@ packages/
 Thumbs.db
 Desktop.ini
 
-# Runtime data
+# Runtime data (nodes, settings, logs)
+/data/
+/config/
 data/crash.log
+*.log
 
 # Test results
 TestResults/
@@ -33,5 +37,4 @@ TestResults/
 *.dotCover
 
 # Others
-*.log
 *.tmp
