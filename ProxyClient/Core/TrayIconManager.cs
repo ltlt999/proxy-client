@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.IO;
 using System.Drawing.Drawing2D;
 using System.Windows;
 using Forms = System.Windows.Forms;
@@ -19,7 +20,7 @@ public class TrayIconManager : IDisposable
     {
         _icon = new Forms.NotifyIcon
         {
-            Icon = CreateIcon(),
+            Icon = LoadIcon(),
             Visible = false,
             Text = "ProxyClient"
         };
@@ -43,9 +44,18 @@ public class TrayIconManager : IDisposable
     public void SetStatus(bool coreRunning, bool proxyOn)
     {
         _icon.Text = $"ProxyClient — {(coreRunning ? (proxyOn ? "代理运行中" : "核心运行中(系统代理未开)") : "未连接")}";
-        _icon.Icon = CreateIcon(coreRunning);
+        _icon.Icon = LoadIcon();
     }
 
+    static Icon LoadIcon()
+    {
+        var p = Path.Combine(AppContext.BaseDirectory, "app.ico");
+        if (File.Exists(p))
+        {
+            try { return new Icon(p); } catch { }
+        }
+        return CreateIcon();
+    }
     static Icon CreateIcon(bool active = false)
     {
         var bmp = new Bitmap(32, 32);
