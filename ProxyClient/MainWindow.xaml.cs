@@ -92,4 +92,18 @@ public partial class MainWindow : FluentWindow
     }
 
     private void Exit_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void CopyLog_Click(object sender, RoutedEventArgs e)
+    {
+        var selected = LogList.SelectedItems.Cast<string>().ToList();
+        if (selected.Count == 0) return;
+        Clipboard.SetText(string.Join(Environment.NewLine, selected));
+    }
+
+    private void CopyAllLogs_Click(object sender, RoutedEventArgs e)
+    {
+        var all = _vm.CoreLogs;
+        if (all.Count == 0) return;
+        Clipboard.SetText(string.Join(Environment.NewLine, all));
+    }
 }

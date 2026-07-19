@@ -45,6 +45,9 @@ public class XrayCoreManager
         }
         Stop();
 
+        LogReceived?.Invoke(this, $"正在启动 Xray: {exe}");
+        LogReceived?.Invoke(this, $"工作目录: {Path.GetDirectoryName(exe) ?? AppContext.BaseDirectory}");
+
         var psi = new ProcessStartInfo
         {
             FileName = exe,
@@ -59,13 +62,23 @@ public class XrayCoreManager
         _process = new Process { StartInfo = psi, EnableRaisingEvents = true };
         _process.OutputDataReceived += (_, e) => { if (e.Data != null) LogReceived?.Invoke(this, e.Data); };
         _process.ErrorDataReceived += (_, e) => { if (e.Data != null) LogReceived?.Invoke(this, e.Data); };
-        _process.Exited += (_, _) => LogReceived?.Invoke(this, "Xray 核心已退出");
+        _process.Exited += (_, _) =>
+        {
+            var code = _process?.ExitCode ?? -1;
+            LogReceived?.Invoke(this, $"Xray 核心已退出 (退出码: {code})");
+        };
 
         try
         {
             _process.Start();
             _process.BeginOutputReadLine();
             _process.BeginErrorReadLine();
+            _process.WaitForInputIdle(500);
+            if (_process.HasExited)
+            {
+                LogReceived?.Invoke(this, $"Xray 核心启动后立即退出 (退出码: {_process.ExitCode})");
+                return false;
+            }
             return true;
         }
         catch (Exception ex)

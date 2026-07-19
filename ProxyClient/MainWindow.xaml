@@ -541,7 +541,15 @@
                              FontFamily="Consolas" FontSize="12" Foreground="#FF34343C"
                              Background="{StaticResource InputFillBrush}"
                              BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                             ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                             SelectionMode="Extended">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="复制" Click="CopyLog_Click"/>
+                                <MenuItem Header="复制全部" Click="CopyAllLogs_Click"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
                 </Grid>
             </Border>
         </Grid>
