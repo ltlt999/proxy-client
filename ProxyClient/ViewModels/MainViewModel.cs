@@ -79,6 +79,7 @@ public class MainViewModel : ViewModelBase
     public RelayCommand ActivateCommand { get; }
     public RelayCommand StartCommand { get; }
     public RelayCommand StopCommand { get; }
+    public RelayCommand PowerCommand { get; }
     public RelayCommand ToggleProxyCommand { get; }
     public RelayCommand TestSelectedCommand { get; }
     public RelayCommand TestAllCommand { get; }
@@ -101,6 +102,7 @@ public class MainViewModel : ViewModelBase
         ActivateCommand = new RelayCommand(Activate, () => SelectedServer != null);
         StartCommand = new RelayCommand(Start, () => !IsCoreRunning && ActiveServer != null);
         StopCommand = new RelayCommand(Stop, () => IsCoreRunning);
+        PowerCommand = new RelayCommand(TogglePower);
         ToggleProxyCommand = new RelayCommand(ToggleProxy);
         TestSelectedCommand = new RelayCommand(async () => await TestAsync(SelectedServer), () => SelectedServer != null);
         TestAllCommand = new RelayCommand(async () => await TestAllAsync(), () => Servers.Count > 0);
@@ -264,6 +266,20 @@ public class MainViewModel : ViewModelBase
         _core.Stop();
         IsCoreRunning = false;
         StatusText = "已断开";
+    }
+
+    private void TogglePower()
+    {
+        if (IsCoreRunning)
+        {
+            if (SystemProxyOn) ToggleProxy();
+            Stop();
+        }
+        else
+        {
+            Start();
+            if (IsCoreRunning) ToggleProxy();
+        }
     }
 
     private void ToggleProxy()

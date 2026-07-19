@@ -1,11 +1,18 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using ProxyClient.ViewModels;
+using Wpf.Ui.Controls;
+using Button = System.Windows.Controls.Button;
+using MessageBoxButton = System.Windows.MessageBoxButton;
+using MessageBoxImage = System.Windows.MessageBoxImage;
 
 namespace ProxyClient;
 
-public partial class MainWindow : Window
+public partial class MainWindow : FluentWindow
 {
     private readonly MainViewModel _vm;
     internal bool _forceHiddenStart;
@@ -26,10 +33,35 @@ public partial class MainWindow : Window
     private void OnStatusChanged(object? sender, bool coreRunning)
         => (App.Current as App)?.ReportStatus(coreRunning, _vm.SystemProxyOn);
 
-    private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    private void ServerList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
+        if (e.OriginalSource is DependencyObject src && FindAncestor<ListBoxItem>(src) == null)
+            return;
         if (_vm.SelectedServer != null)
             _vm.ActivateCommand.Execute(null);
+    }
+
+    private void ServerList_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.OriginalSource is DependencyObject src && FindAncestor<ListBoxItem>(src) is { } item)
+            item.IsSelected = true;
+    }
+
+    private static T? FindAncestor<T>(DependencyObject? node) where T : DependencyObject
+    {
+        while (node != null && node is not T)
+            node = VisualTreeHelper.GetParent(node);
+        return node as T;
+    }
+
+    private void AddMenu_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button b && b.ContextMenu != null)
+        {
+            b.ContextMenu.PlacementTarget = b;
+            b.ContextMenu.Placement = PlacementMode.Bottom;
+            b.ContextMenu.IsOpen = true;
+        }
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -68,27 +100,4 @@ public partial class MainWindow : Window
     }
 
     private void Exit_Click(object sender, RoutedEventArgs e) => Close();
-
-    private void TitleBar_Drag(object sender, MouseButtonEventArgs e)
-    {
-        if (e.ClickCount == 2)
-        {
-            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-            return;
-        }
-        if (e.LeftButton == MouseButtonState.Pressed)
-            DragMove();
-    }
-
-    private void Minimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
-
-    private void Maximize_Click(object sender, RoutedEventArgs e)
-        => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-
-    private void Close_Click(object sender, RoutedEventArgs e) => Close();
-
-    private void Window_StateChanged(object sender, EventArgs e)
-    {
-        MaxRestoreBtn.Content = WindowState == WindowState.Maximized ? "❐" : "□";
-    }
 }

@@ -14,7 +14,7 @@ public static class AutoStartHelper
         return key?.GetValue(ValueName) != null;
     }
 
-    public static void SetEnabled(bool enabled)
+    public static void SetEnabled(bool enabled, bool minimized)
     {
         using var key = Registry.CurrentUser.OpenSubKey(RunKeyPath, true);
         if (key == null) return;
@@ -22,7 +22,8 @@ public static class AutoStartHelper
         {
             var exe = Environment.ProcessPath;
             if (string.IsNullOrEmpty(exe)) return;
-            key.SetValue(ValueName, $"\"{exe}\" {MinimizedArg}", RegistryValueKind.String);
+            var args = minimized ? $" {MinimizedArg}" : "";
+            key.SetValue(ValueName, $"\"{exe}\"{args}", RegistryValueKind.String);
         }
         else
         {

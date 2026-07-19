@@ -1,9 +1,10 @@
 using System.Windows;
 using System.Windows.Input;
+using Wpf.Ui.Controls;
 
 namespace ProxyClient;
 
-public partial class InputDialog : Window
+public partial class InputDialog : FluentWindow
 {
     private readonly bool _multiline;
     public string Input { get; private set; } = "";

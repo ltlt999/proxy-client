@@ -1,9 +1,10 @@
 using System.Windows;
 using ProxyClient.Models;
+using Wpf.Ui.Controls;
 
 namespace ProxyClient;
 
-public partial class ServerEditWindow : Window
+public partial class ServerEditWindow : FluentWindow
 {
     public ServerEditWindow(ServerItem server)
     {

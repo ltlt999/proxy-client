@@ -1,9 +1,9 @@
-using System.IO;
+﻿using System.IO;
 using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media;
 using ProxyClient.Core;
 using ProxyClient.Storage;
+using Wpf.Ui.Appearance;
 
 namespace ProxyClient;
 
@@ -18,9 +18,6 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
-
-        // 使用软件渲染避免自定义 WindowChrome + Popup 在某些显卡驱动下崩溃
-        RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
 
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>
             LogCrash($"UnhandledException: {args.ExceptionObject}");
@@ -51,6 +48,16 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+        // Apply WPF-UI dark theme and tint the system accent with our brand color,
+        // so every Fluent control (toggle / selection / focus ring) stays on-brand.
+        try
+        {
+            ApplicationThemeManager.Apply(ApplicationTheme.Light);
+            ApplicationAccentColorManager.Apply(Color.FromRgb(0x00, 0x7A, 0xFF), ApplicationTheme.Light);
+        }
+        catch { /* theme apply is best-effort; never block startup */ }
+
         Data = ConfigStore.Load();
 
         _tray = new TrayIconManager();
