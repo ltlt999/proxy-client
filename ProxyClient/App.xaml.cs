@@ -60,6 +60,8 @@ public partial class App : Application
 
         Data = ConfigStore.Load();
 
+        XrayCoreManager.CleanupPorts();
+
         _tray = new TrayIconManager();
         _tray.ShowRequested += OnTrayShow;
         _tray.ExitRequested += OnTrayExit;

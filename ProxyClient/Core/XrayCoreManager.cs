@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using System.Net.NetworkInformation;
 
 namespace ProxyClient.Core;
 
@@ -13,6 +14,91 @@ public class XrayCoreManager
 
     public string ConfigDir => Path.Combine(AppContext.BaseDirectory, "config");
     public string ConfigPath => Path.Combine(ConfigDir, "config.json");
+
+    public static void CleanupPorts()
+    {
+        var ports = new[] { XrayConfigBuilder.SocksPort, XrayConfigBuilder.HttpPort };
+        foreach (var p in ports)
+        {
+            try
+            {
+                var procs = GetProcessesUsingPort(p);
+                foreach (var pid in procs)
+                {
+                    try
+                    {
+                        var proc = Process.GetProcessById(pid);
+                        if (proc.ProcessName.Equals("xray", StringComparison.OrdinalIgnoreCase))
+                        {
+                            proc.Kill();
+                            proc.WaitForExit(2000);
+                        }
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+        }
+    }
+
+    static List<int> GetProcessesUsingPort(int port)
+    {
+        var result = new List<int>();
+        try
+        {
+            var props = IPGlobalProperties.GetIPGlobalProperties();
+            var listeners = props.GetActiveTcpListeners();
+            foreach (var ep in listeners)
+            {
+                if (ep.Port == port)
+                {
+                    result.AddRange(FindPidsForEndpoint(ep));
+                }
+            }
+        }
+        catch { }
+        return result;
+    }
+
+    static List<int> FindPidsForEndpoint(System.Net.IPEndPoint endpoint)
+    {
+        var pids = new List<int>();
+        try
+        {
+            var output = ExecuteNetstat();
+            foreach (var line in output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length < 5) continue;
+                var local = parts[1];
+                var state = parts[3];
+                var pidStr = parts[4];
+                if (local.Contains($":{endpoint.Port}") && state == "LISTENING" && int.TryParse(pidStr, out var pid))
+                {
+                    pids.Add(pid);
+                }
+            }
+        }
+        catch { }
+        return pids;
+    }
+
+    static string ExecuteNetstat()
+    {
+        var psi = new ProcessStartInfo
+        {
+            FileName = "netstat.exe",
+            Arguments = "-ano",
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            CreateNoWindow = true
+        };
+        using var proc = Process.Start(psi);
+        if (proc == null) return "";
+        var output = proc.StandardOutput.ReadToEnd();
+        proc.WaitForExit(3000);
+        return output;
+    }
 
     public string ResolveCorePath()
     {
@@ -47,6 +133,8 @@ public class XrayCoreManager
 
         LogReceived?.Invoke(this, $"正在启动 Xray: {exe}");
         LogReceived?.Invoke(this, $"工作目录: {Path.GetDirectoryName(exe) ?? AppContext.BaseDirectory}");
+        CleanupPorts();
+        Thread.Sleep(300);
 
         var psi = new ProcessStartInfo
         {
