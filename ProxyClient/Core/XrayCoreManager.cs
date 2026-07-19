@@ -73,7 +73,7 @@ public class XrayCoreManager
             _process.Start();
             _process.BeginOutputReadLine();
             _process.BeginErrorReadLine();
-            _process.WaitForInputIdle(500);
+            _process.WaitForExit(500);
             if (_process.HasExited)
             {
                 LogReceived?.Invoke(this, $"Xray 核心启动后立即退出 (退出码: {_process.ExitCode})");
