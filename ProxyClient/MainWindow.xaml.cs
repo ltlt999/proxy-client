@@ -88,15 +88,7 @@ public partial class MainWindow : FluentWindow
 
     private void About_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show(
-            "ProxyClient v1.0\n\n" +
-            "基于 Xray-core 的现代化轻量代理客户端\n\n" +
-            "支持协议：VMess / VLESS / Trojan / Shadowsocks\n" +
-            "功能：订阅导入  分享链接解析  规则/全局路由\n" +
-            "托盘常驻  开机自启  启动后自动连接\n\n" +
-            "本地端口：SOCKS5 10808  HTTP 10809\n" +
-            "关闭按钮可最小化到托盘",
-            "关于 ProxyClient", MessageBoxButton.OK, MessageBoxImage.Information);
+        new AboutWindow { Owner = this }.ShowDialog();
     }
 
     private void Exit_Click(object sender, RoutedEventArgs e) => Close();
