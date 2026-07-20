@@ -2,6 +2,8 @@
 
 一个基于 Xray-core 的轻量 Windows 代理客户端，采用现代化深色 WPF 界面。
 
+![软件界面截图](screenshots/screenshot.png)
+
 ## 功能特性
 
 - 支持协议：VMess / VLESS / Trojan / Shadowsocks
