@@ -11,7 +11,7 @@ public static class XrayConfigBuilder
     public const int SocksPort = 10808;
     public const int HttpPort = 10809;
 
-    public static string Build(ServerItem server, RoutingMode mode)
+    public static string Build(ServerItem server, RoutingMode mode, List<RoutingRule>? customRules = null)
     {
         var root = new JsonObject
         {
@@ -38,10 +38,29 @@ public static class XrayConfigBuilder
             {
                 ["domainStrategy"] = "IPIfNonMatch",
                 ["rules"] = new JsonArray(
-                    new JsonObject { ["type"] = "field", ["outboundTag"] = "direct", ["domain"] = new JsonArray("geosite:category-ads-all") },
-                    new JsonObject { ["type"] = "field", ["outboundTag"] = "direct", ["domain"] = new JsonArray("geosite:cn", "geosite:private") },
+                    new JsonObject { ["type"] = "field", ["outboundTag"] = "block", ["domain"] = new JsonArray("geosite:category-ads-all") },
+                    new JsonObject { ["type"] = "field", ["outboundTag"] = "direct", ["domain"] = new JsonArray("geosite:cn", "geosite:private", "geosite:tld-cn") },
                     new JsonObject { ["type"] = "field", ["outboundTag"] = "direct", ["ip"] = new JsonArray("geoip:private", "geoip:cn") }
                 )
+            };
+        }
+        else if (mode == RoutingMode.Custom)
+        {
+            var rules = new JsonArray();
+            foreach (var r in customRules ?? new List<RoutingRule>())
+            {
+                if (string.IsNullOrWhiteSpace(r.Value)) continue;
+                var rule = new JsonObject { ["type"] = "field", ["outboundTag"] = r.Action };
+                var values = ParseRuleValues(r.Value);
+                if (r.Type == "domain") rule["domain"] = values;
+                else if (r.Type == "ip") rule["ip"] = values;
+                else if (r.Type == "port") rule["port"] = r.Value.Replace(" ", "").Replace("\n", ",").Trim(',');
+                rules.Add(rule);
+            }
+            root["routing"] = new JsonObject
+            {
+                ["domainStrategy"] = "IPIfNonMatch",
+                ["rules"] = rules
             };
         }
         else
@@ -97,6 +116,17 @@ public static class XrayConfigBuilder
         if (trimmed.EndsWith("Mb", StringComparison.OrdinalIgnoreCase)) return trimmed + "ps";
         if (int.TryParse(trimmed, out _)) return trimmed + " Mbps";
         return trimmed;
+    }
+
+    static JsonArray ParseRuleValues(string value)
+    {
+        var array = new JsonArray();
+        foreach (var raw in value.Split(',', '\n', '\r'))
+        {
+            var v = raw.Trim();
+            if (!string.IsNullOrEmpty(v)) array.Add(v);
+        }
+        return array;
     }
 
     static JsonObject BuildProxyOutbound(ServerItem s)
