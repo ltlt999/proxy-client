@@ -10,6 +10,7 @@ public static class Protocols
     public const string VLESS = "vless";
     public const string Trojan = "trojan";
     public const string Shadowsocks = "shadowsocks";
+    public const string Hysteria2 = "hysteria2";
 }
 
 public class ServerItem : INotifyPropertyChanged
@@ -37,6 +38,13 @@ public class ServerItem : INotifyPropertyChanged
     public string ShortId { get; set; } = "";
     public string SpiderX { get; set; } = "";
     public bool AllowInsecure { get; set; } = false;
+
+    public string Hy2Password { get; set; } = "";
+    public string Hy2Obfs { get; set; } = "";
+    public string Hy2ObfsPassword { get; set; } = "";
+    public string Hy2UpMbps { get; set; } = "";
+    public string Hy2DownMbps { get; set; } = "";
+    public bool Hy2DisableUdp { get; set; } = false;
 
     [JsonIgnore]
     private string _testResult = "";

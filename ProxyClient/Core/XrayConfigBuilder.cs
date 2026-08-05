@@ -55,6 +55,50 @@ public static class XrayConfigBuilder
     static JsonObject Inbound(string tag, int port, string protocol, JsonObject settings)
         => new() { ["tag"] = tag, ["port"] = port, ["listen"] = "127.0.0.1", ["protocol"] = protocol, ["settings"] = settings };
 
+    static JsonObject BuildHysteria2Settings(ServerItem s)
+    {
+        var settings = new JsonObject
+        {
+            ["servers"] = new JsonArray(new JsonObject
+            {
+                ["address"] = s.Address,
+                ["port"] = s.Port
+            }),
+            ["auth"] = s.Hy2Password
+        };
+
+        if (!string.IsNullOrEmpty(s.Hy2Obfs))
+        {
+            settings["obfs"] = s.Hy2Obfs;
+            if (!string.IsNullOrEmpty(s.Hy2ObfsPassword))
+                settings["obfsPassword"] = s.Hy2ObfsPassword;
+        }
+
+        if (!string.IsNullOrEmpty(s.Hy2UpMbps) || !string.IsNullOrEmpty(s.Hy2DownMbps))
+        {
+            settings["bandwidth"] = new JsonObject
+            {
+                ["up"] = FormatBandwidth(s.Hy2UpMbps),
+                ["down"] = FormatBandwidth(s.Hy2DownMbps)
+            };
+        }
+
+        if (s.Hy2DisableUdp)
+            settings["disableUdp"] = true;
+
+        return settings;
+    }
+
+    static string FormatBandwidth(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return "0 Mbps";
+        var trimmed = value.Trim();
+        if (trimmed.EndsWith("Mbps", StringComparison.OrdinalIgnoreCase)) return trimmed;
+        if (trimmed.EndsWith("Mb", StringComparison.OrdinalIgnoreCase)) return trimmed + "ps";
+        if (int.TryParse(trimmed, out _)) return trimmed + " Mbps";
+        return trimmed;
+    }
+
     static JsonObject BuildProxyOutbound(ServerItem s)
     {
         var ob = new JsonObject { ["tag"] = "proxy" };
@@ -121,6 +165,11 @@ public static class XrayConfigBuilder
                 };
                 break;
 
+            case Protocols.Hysteria2:
+                ob["protocol"] = "hysteria2";
+                ob["settings"] = BuildHysteria2Settings(s);
+                break;
+
             default:
                 ob["protocol"] = "freedom";
                 break;
@@ -134,7 +183,7 @@ public static class XrayConfigBuilder
     {
         var ss = new JsonObject { ["network"] = string.IsNullOrEmpty(s.Network) ? "tcp" : s.Network };
 
-        if (s.StreamSecurity == "tls" || (s.Protocol == Protocols.Trojan && s.StreamSecurity != "reality"))
+        if (s.StreamSecurity == "tls" || (s.Protocol == Protocols.Trojan && s.StreamSecurity != "reality") || s.Protocol == Protocols.Hysteria2)
         {
             ss["security"] = "tls";
             var tls = new JsonObject

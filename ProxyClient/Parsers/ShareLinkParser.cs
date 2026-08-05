@@ -16,6 +16,8 @@ public static class ShareLinkParser
             if (link.StartsWith("vless://")) return ParseVless(link);
             if (link.StartsWith("trojan://")) return ParseTrojan(link);
             if (link.StartsWith("ss://")) return ParseShadowsocks(link);
+            if (link.StartsWith("hysteria2://")) return ParseHysteria2(link);
+            if (link.StartsWith("hy2://")) return ParseHysteria2(link.Replace("hy2://", "hysteria2://"));
         }
         catch { return null; }
         return null;
@@ -177,5 +179,27 @@ public static class ShareLinkParser
             Network = "tcp",
             StreamSecurity = "none"
         };
+    }
+
+    static ServerItem ParseHysteria2(string link)
+    {
+        var uri = new Uri(link);
+        var q = ParseQuery(uri.Query);
+        var s = new ServerItem { Protocol = Protocols.Hysteria2 };
+        s.UserId = Uri.UnescapeDataString(uri.UserInfo);
+        s.Address = uri.Host;
+        s.Port = uri.Port;
+        s.Remark = Uri.UnescapeDataString(uri.Fragment.TrimStart('#'));
+        s.Hy2Password = s.UserId;
+        s.Hy2Obfs = q.GetValueOrDefault("obfs", "");
+        s.Hy2ObfsPassword = q.GetValueOrDefault("obfs-password", "");
+        s.Hy2UpMbps = q.GetValueOrDefault("upmbps", "");
+        s.Hy2DownMbps = q.GetValueOrDefault("downmbps", "");
+        s.Sni = q.GetValueOrDefault("sni", "");
+        s.AllowInsecure = q.GetValueOrDefault("insecure", "") == "1";
+        s.Network = "udp";
+        s.StreamSecurity = "tls";
+        if (string.IsNullOrEmpty(s.Sni)) s.Sni = s.Address;
+        return s;
     }
 }

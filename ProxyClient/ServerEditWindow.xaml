@@ -65,67 +65,102 @@
                 <TextBlock Text="高级选项" Style="{StaticResource SectionTitle}"/>
                 <ui:CardExpander Header="传输层与 TLS 参数" IsExpanded="True" Margin="0,0,0,16">
                     <StackPanel Margin="0,8,0,0">
-                        <Grid Margin="0,0,0,12">
+                        <Grid x:Name="AlterIdRow" Margin="0,0,0,12">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="alterId" Style="{StaticResource FieldLabel}"/>
                             <TextBox Grid.Column="1" Text="{Binding AlterId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-                        <Grid Margin="0,0,0,12">
+                        <Grid x:Name="SecurityRow" Margin="0,0,0,12">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="加密方法" Style="{StaticResource FieldLabel}"/>
                             <ComboBox Grid.Column="1" x:Name="SecurityBox" IsEditable="True"
                                       Text="{Binding Security, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-                        <Grid Margin="0,0,0,12">
+                        <Grid x:Name="NetworkRow" Margin="0,0,0,12">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="传输" Style="{StaticResource FieldLabel}"/>
                             <ComboBox Grid.Column="1" x:Name="NetworkBox"
                                       SelectedItem="{Binding Network, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-                        <Grid Margin="0,0,0,12">
+                        <Grid x:Name="PathRow" Margin="0,0,0,12">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Path" Style="{StaticResource FieldLabel}"/>
                             <TextBox Grid.Column="1" Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-                        <Grid Margin="0,0,0,12">
+                        <Grid x:Name="HostRow" Margin="0,0,0,12">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Host" Style="{StaticResource FieldLabel}"/>
                             <TextBox Grid.Column="1" Text="{Binding Host, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-                        <Grid Margin="0,0,0,12">
+                        <Grid x:Name="SniRow" Margin="0,0,0,12">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="SNI" Style="{StaticResource FieldLabel}"/>
                             <TextBox Grid.Column="1" Text="{Binding Sni, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-                        <Grid Margin="0,0,0,12">
+                        <Grid x:Name="StreamSecurityRow" Margin="0,0,0,12">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="传输层安全" Style="{StaticResource FieldLabel}"/>
                             <ComboBox Grid.Column="1" x:Name="StreamSecurityBox"
                                       SelectedItem="{Binding StreamSecurity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-                        <Grid Margin="0,0,0,12">
+                        <Grid x:Name="FlowRow" Margin="0,0,0,12">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Flow" Style="{StaticResource FieldLabel}"/>
                             <TextBox Grid.Column="1" Text="{Binding Flow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-                        <Grid Margin="0,0,0,12">
+                        <Grid x:Name="FingerprintRow" Margin="0,0,0,12">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="TLS 指纹" Style="{StaticResource FieldLabel}"/>
                             <ComboBox Grid.Column="1" x:Name="FingerprintBox" IsEditable="True"
                                       Text="{Binding Fingerprint, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-                        <Grid Margin="0,0,0,12">
+                        <Grid x:Name="PublicKeyRow" Margin="0,0,0,12">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Reality 公钥" Style="{StaticResource FieldLabel}"/>
                             <TextBox Grid.Column="1" Text="{Binding PublicKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-                        <Grid Margin="0,0,0,4">
+                        <Grid x:Name="ShortIdRow" Margin="0,0,0,4">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="120"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="ShortId" Style="{StaticResource FieldLabel}"/>
                             <TextBox Grid.Column="1" Text="{Binding ShortId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                         <CheckBox Content="跳过证书验证 (allowInsecure)" IsChecked="{Binding AllowInsecure, Mode=TwoWay}"
                                   Margin="120,8,0,0" FontSize="12.5" Foreground="{StaticResource FgSecondaryBrush}"/>
+
+                        <TextBlock Text="Hysteria 2 参数" Style="{StaticResource SectionTitle}" Margin="0,16,0,10"/>
+                        <Grid x:Name="Hy2Fields" Margin="0,0,0,12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="密码" Style="{StaticResource FieldLabel}" Margin="0,0,0,12"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Hy2Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="混淆类型" Style="{StaticResource FieldLabel}" Margin="0,0,0,12"/>
+                            <ComboBox Grid.Row="1" Grid.Column="1" x:Name="Hy2ObfsBox" IsEditable="True"
+                                      Text="{Binding Hy2Obfs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="混淆密码" Style="{StaticResource FieldLabel}" Margin="0,0,0,12"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Hy2ObfsPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="上传带宽" Style="{StaticResource FieldLabel}" Margin="0,0,0,12"/>
+                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Hy2UpMbps, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="下载带宽" Style="{StaticResource FieldLabel}" Margin="0,0,0,12"/>
+                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Hy2DownMbps, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+
+                            <CheckBox Grid.Row="5" Grid.Column="1" Content="禁用 UDP" IsChecked="{Binding Hy2DisableUdp, Mode=TwoWay}"
+                                      FontSize="12.5" Foreground="{StaticResource FgSecondaryBrush}"/>
+                        </Grid>
                     </StackPanel>
                 </ui:CardExpander>
             </StackPanel>

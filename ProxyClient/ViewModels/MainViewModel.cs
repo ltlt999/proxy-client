@@ -216,6 +216,12 @@ public class MainViewModel : ViewModelBase
             SelectedServer.ShortId = copy.ShortId;
             SelectedServer.SpiderX = copy.SpiderX;
             SelectedServer.AllowInsecure = copy.AllowInsecure;
+            SelectedServer.Hy2Password = copy.Hy2Password;
+            SelectedServer.Hy2Obfs = copy.Hy2Obfs;
+            SelectedServer.Hy2ObfsPassword = copy.Hy2ObfsPassword;
+            SelectedServer.Hy2UpMbps = copy.Hy2UpMbps;
+            SelectedServer.Hy2DownMbps = copy.Hy2DownMbps;
+            SelectedServer.Hy2DisableUdp = copy.Hy2DisableUdp;
             Save();
             if (SelectedServer.IsActive && IsCoreRunning) { Stop(); Start(); }
             StatusText = "已保存修改";
