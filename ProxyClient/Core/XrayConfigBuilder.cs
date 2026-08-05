@@ -4,7 +4,7 @@ using ProxyClient.Models;
 
 namespace ProxyClient.Core;
 
-public enum RoutingMode { Rule = 0, Global = 1 }
+public enum RoutingMode { Rule = 0, Global = 1, Custom = 2 }
 
 public static class XrayConfigBuilder
 {

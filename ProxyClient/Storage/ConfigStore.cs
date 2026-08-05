@@ -4,6 +4,8 @@ using ProxyClient.Models;
 
 namespace ProxyClient.Storage;
 
+using ProxyClient.Models;
+
 public class AppSettings
 {
     public string ActiveServerId { get; set; } = "";
@@ -13,6 +15,7 @@ public class AppSettings
     public bool AutoStartWithWindows { get; set; }
     public bool MinimizeOnStart { get; set; }
     public bool MinimizeOnClose { get; set; } = true;
+    public List<RoutingRule> CustomRules { get; set; } = new();
 }
 
 public class AppData
