@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -70,6 +71,15 @@ public class MainViewModel : ViewModelBase
     public int LocalHttp => XrayConfigBuilder.HttpPort;
     public string CoreState => IsCoreRunning ? "运行中" : "已停止";
     public string ProxyState => SystemProxyOn ? "已开启" : "未开启";
+
+    public string AppVersion
+    {
+        get
+        {
+            var v = Assembly.GetExecutingAssembly().GetName().Version;
+            return v == null ? "v1.0" : $"v{v.Major}.{v.Minor}.{v.Build}";
+        }
+    }
 
     public RelayCommand AddByLinkCommand { get; }
     public RelayCommand ImportSubscriptionCommand { get; }

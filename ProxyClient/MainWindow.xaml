@@ -319,7 +319,7 @@
                                Foreground="{StaticResource FgBrush}" VerticalAlignment="Center"/>
                     <Border Background="{StaticResource AccentSoftBrush}" CornerRadius="8" Padding="7,1"
                             Margin="8,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="v1.0" FontSize="10.5" FontWeight="SemiBold"
+                        <TextBlock Text="{Binding AppVersion}" FontSize="10.5" FontWeight="SemiBold"
                                    Foreground="{StaticResource AccentSoftFgBrush}"/>
                     </Border>
                 </StackPanel>
