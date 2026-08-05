@@ -25,7 +25,7 @@ public class MainViewModel : ViewModelBase
 
     public ServerItem? ActiveServer => Servers.FirstOrDefault(s => s.IsActive);
 
-    public List<string> RoutingModes { get; } = new() { "规则模式 (绕过大陆)", "全局模式" };
+    public List<string> RoutingModes { get; } = new() { "规则模式 (绕过大陆)", "全局模式", "自定义规则" };
     public int RoutingModeIndex
     {
         get => _data.Settings.RoutingMode;
@@ -37,11 +37,11 @@ public class MainViewModel : ViewModelBase
             Save();
             if (IsCoreRunning && ActiveServer != null)
             {
-                _core.WriteConfig(XrayConfigBuilder.Build(ActiveServer, (RoutingMode)value));
+                _core.WriteConfig(XrayConfigBuilder.Build(ActiveServer, (RoutingMode)value, _data.Settings.CustomRules));
                 _core.Stop();
                 _core.Start();
                 IsCoreRunning = _core.IsRunning;
-                StatusText = $"已切换为{(value == (int)RoutingMode.Global ? "全局" : "规则")}模式并重载核心";
+                StatusText = $"已切换为{GetRoutingModeName(value)}模式并重载核心";
             }
         }
     }
@@ -129,6 +129,13 @@ public class MainViewModel : ViewModelBase
     }
 
     private void Refresh() => CommandManager.InvalidateRequerySuggested();
+
+    private static string GetRoutingModeName(int index) => index switch
+    {
+        (int)RoutingMode.Global => "全局",
+        (int)RoutingMode.Custom => "自定义",
+        _ => "规则"
+    };
 
     private void Save()
     {
@@ -267,7 +274,7 @@ public class MainViewModel : ViewModelBase
     {
         var active = ActiveServer;
         if (active == null) { StatusText = "请先双击节点将其设为活动节点"; return; }
-        var json = XrayConfigBuilder.Build(active, (RoutingMode)RoutingModeIndex);
+        var json = XrayConfigBuilder.Build(active, (RoutingMode)RoutingModeIndex, _data.Settings.CustomRules);
         _core.WriteConfig(json);
         if (_core.Start())
         {
