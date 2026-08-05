@@ -1,11 +1,9 @@
 using System.Windows;
-using Microsoft.Win32;
 using ProxyClient.Core;
 using ProxyClient.Models;
 using ProxyClient.Parsers;
 using ProxyClient.Storage;
 using Wpf.Ui.Controls;
-using MessageBox = System.Windows.MessageBox;
 using MessageBoxButton = System.Windows.MessageBoxButton;
 using MessageBoxImage = System.Windows.MessageBoxImage;
 
@@ -76,7 +74,7 @@ public partial class SettingsWindow : FluentWindow
 
     private void ImportRules_Click(object sender, RoutedEventArgs e)
     {
-        var dlg = new OpenFileDialog
+        var dlg = new Microsoft.Win32.OpenFileDialog
         {
             Filter = "规则文件 (*.json;*.txt)|*.json;*.txt|所有文件 (*.*)|*.*",
             Title = "导入路由规则"
