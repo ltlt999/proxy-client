@@ -1,0 +1,39 @@
+<ui:FluentWindow x:Class="ProxyClient.RoutingRuleEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        Title="编辑规则" Width="420" Height="420"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource BgBrush}"
+        ResizeMode="NoResize" ShowInTaskbar="False">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="规则类型" Style="{StaticResource FieldLabel}" Margin="0,0,0,6"/>
+        <ComboBox Grid.Row="1" x:Name="TypeBox" Margin="0,0,0,16"/>
+
+        <TextBlock Grid.Row="2" Text="规则值" Style="{StaticResource FieldLabel}" Margin="0,0,0,6"/>
+        <TextBox Grid.Row="3" x:Name="ValueBox" TextWrapping="Wrap" AcceptsReturn="True"
+                 VerticalScrollBarVisibility="Auto" Height="120" Margin="0,0,0,6"/>
+        <TextBlock Grid.Row="4" Text="每行一个，支持逗号分隔" FontSize="11"
+                   Foreground="{StaticResource MutedBrush}" Margin="0,0,0,16"/>
+
+        <TextBlock Grid.Row="5" Text="动作" Style="{StaticResource FieldLabel}" Margin="0,0,0,6"/>
+        <ComboBox Grid.Row="6" x:Name="ActionBox" Margin="0,0,0,16"/>
+
+        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Width="100" Height="34" Margin="0,0,10,0" IsDefault="True" Click="Ok_Click"
+                    Style="{StaticResource AccentButton}">确定</Button>
+            <Button Width="100" Height="34" IsCancel="True" Style="{StaticResource SecondaryButton}">取消</Button>
+        </StackPanel>
+    </Grid>
+</ui:FluentWindow>
